@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <title>Cronómetro TK</title>
+  <style>
+    /* Estilos CSS */
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: white;
+      color: #333;
+    }
+	
+	body.dark-mode {
+  background-color: #111;
+}
+
+  .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  border-top: 10px solid red;
+  border-right: 10px solid green;
+  border-bottom: 10px solid yellow;
+  border-left: 10px solid blue;
+  border-radius: 20px;
+  transition: border-color 0.3s ease;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.container.dark-mode {
+  border-color: #ff9900;
+}
+
+  .imgredonda {
+  width: 300px;
+  height: 300px;
+  border-radius: 150px;
+  transition: background-color 0.3s ease;
+}
+
+.imgredonda.dark-mode {
+  background-color: #555;
+}
+
+h1 {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+h1.dark-mode {
+  color: #eee;
+}
+
+select {
+  padding: 5px;
+  width: 60px;
+}
+
+#timer {
+  font-size: 40px;
+  margin: 20px 0;
+  transition: color 0.3s ease;
+}
+
+#timer.dark-mode {
+  color: #eee;
+}
+
+#counter {
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+#counter.dark-mode {
+  color: #eee;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius:35px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button.dark-mode {
+  background-color: #555;
+}
+
+button.dark-mode:hover {
+  background-color: #444;
+}
+
+/* Estilos para el botón deslizable */
+.toggle-button {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 9999;
+  width: 50px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #ddd;
+  transition: background-color 0.3s ease;
+  
+}
+
+.toggle-button::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: white;
+  margin: 4px;
+  transition: margin 0.3s ease, background-color 0.3s ease;
+}
+
+.toggle-button.dark-mode {
+  background-color: #555;
+}
+
+.toggle-button.dark-mode::after {
+  margin-left: 24px;
+  background-color: #333;
+}
+</style>
+  <script>
+    var startTime;
+    var timerInterval;
+    var counter = 0;
+	
+	function startTimer() {
+  var hours = parseInt(document.getElementById("hours").value);
+  var minutes = parseInt(document.getElementById("minutes").value);
+  var seconds = parseInt(document.getElementById("seconds").value);
+
+  var totalTime = (hours * 3600 + minutes * 60 + seconds) * 1000; // Convertir a milisegundos
+
+  startTime = Date.now();
+  var endTime = startTime + totalTime;
+  
+  timerInterval = setInterval(function() {
+    var currentTime = Date.now();
+    var remainingTime = endTime - currentTime;
+
+    if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      remainingTime = 0;
+      resetTimer();
+    }
+
+    var milliseconds = Math.floor(remainingTime % 1000);
+    var seconds = Math.floor(remainingTime / 1000) % 60;
+    var minutes = Math.floor(remainingTime / (1000 * 60)) % 60;
+    var hours = Math.floor(remainingTime / (1000 * 60 * 60));
+
+    document.getElementById("timer").innerHTML = 
+      ('0' + hours).slice(-2) + ":" +
+      ('0' + minutes).slice(-2) + ":" +
+      ('0' + seconds).slice(-2);
+  
+    // Actualizar el contador variable
+    counter++;
+    document.getElementById("counter").innerHTML = counter;
+  }, 10); // Actualiza el contador cada 10 milisegundos
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  resetTimer();
+}
+
+function resetTimer() {
+  document.getElementById("timer").innerHTML = "0:0:0";
+  counter = 0;
+  document.getElementById("counter").innerHTML = counter;
+}
+
+function toggleDarkMode() {
+  var body = document.body;
+  var container = document.querySelector(".container");
+  var imgredonda = document.querySelector(".imgredonda");
+  var h1 = document.querySelector("h1");
+  var timer = document.getElementById("timer");
+  var counter = document.getElementById("counter");
+  var buttons = document.getElementsByTagName("button");
+  var toggleButton = document.querySelector(".toggle-button");
+
+  body.classList.toggle("dark-mode");
+  container.classList.toggle("dark-mode");
+  imgredonda.classList.toggle("dark-mode");
+  h1.classList.toggle("dark-mode");
+  timer.classList.toggle("dark-mode");
+  counter.classList.toggle("dark-mode");
+
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.toggle("dark-mode");
+  }
+
+  toggleButton.classList.toggle("dark-mode");
+}
+ </script>
+</head>
+<body>
+<div class="container">
+  <h1>Cronómetro TK</h1>
+   <img src="data:image/png;base64,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" class="imgredonda">
+<div>
+
+</div>
+    
+	
+	
+  <div>
+    Tiempo inicial:
+    <select id="hours">
+	 <option value="0">00</option>
+      <option value="1">01</option>
+	  <option value="2">02</option>
+	  <option value="3">03</option>
+	  <option value="4">04</option>
+	  <option value="5">05</option>
+	  <option value="6">06</option>
+	  <option value="7">07</option>
+	  <option value="8">08</option>
+	  <option value="9">09</option>
+	  <option value="10">10</option>
+	  <option value="11">11</option>
+	  <option value="12">12</option>
+	  <option value="13">13</option>
+	  <option value="14">14</option>
+	  <option value="15">15</option>
+	  <option value="16">16</option>
+	  <option value="17">17</option>
+	  <option value="18">18</option>
+	  <option value="19">19</option>
+	  <option value="20">20</option>
+	  <option value="21">21</option>
+	  <option value="22">22</option>
+	  <option value="23">23</option>
+	  <option value="24">24</option>
+      <!-- Agregar más opciones de horas según tus necesidades -->
+	    </select>
+    :
+    <select id="minutes">
+      <option value="0">00</option>
+      <option value="1">01</option>
+	  <option value="2">02</option>
+	  <option value="3">03</option>
+	  <option value="4">04</option>
+	  <option value="5">05</option>
+	  <option value="6">06</option>
+	  <option value="7">07</option>
+	  <option value="8">08</option>
+	  <option value="9">09</option>
+	  <option value="10">10</option>
+	  <option value="11">11</option>
+	  <option value="12">12</option>
+	  <option value="13">13</option>
+	  <option value="14">14</option>
+	  <option value="15">15</option>
+	  <option value="16">16</option>
+	  <option value="17">17</option>
+	  <option value="18">18</option>
+	  <option value="19">19</option>
+	  <option value="20">20</option>
+	  <option value="21">21</option>
+	  <option value="22">22</option>
+	  <option value="23">23</option>
+	  <option value="24">24</option>
+	  <option value="24">25</option>
+	  <option value="24">26</option>
+	  <option value="24">27</option>
+	  <option value="24">28</option>
+	  <option value="24">29</option>
+	  <option value="20">30</option>
+	  <option value="21">31</option>
+	  <option value="22">32</option>
+	  <option value="23">33</option>
+	  <option value="24">34</option>
+	  <option value="24">35</option>
+	  <option value="24">36</option>
+	  <option value="24">37</option>
+	  <option value="24">38</option>
+	  <option value="24">39</option>
+	  <option value="20">40</option>
+	  <option value="21">41</option>
+	  <option value="22">42</option>
+	  <option value="23">43</option>
+	  <option value="24">44</option>
+	  <option value="24">45</option>
+	  <option value="24">46</option>
+	  <option value="24">47</option>
+	  <option value="24">48</option>
+	  <option value="24">49</option>
+	  <option value="20">50</option>
+	  <option value="21">51</option>
+	  <option value="22">52</option>
+	  <option value="23">53</option>
+	  <option value="24">54</option>
+	  <option value="24">55</option>
+	  <option value="24">56</option>
+	  <option value="24">57</option>
+	  <option value="24">58</option>
+	  <option value="24">59</option>
+      <!-- Agregar más opciones de minutos según tus necesidades -->
+    </select>
+    :
+    <select id="seconds">
+      <option value="0">00</option>
+      <option value="1">01</option>
+	  <option value="2">02</option>
+	  <option value="3">03</option>
+	  <option value="4">04</option>
+	  <option value="5">05</option>
+	  <option value="6">06</option>
+	  <option value="7">07</option>
+	  <option value="8">08</option>
+	  <option value="9">09</option>
+	    <option value="10">10</option>
+	  <option value="11">11</option>
+	  <option value="12">12</option>
+	  <option value="13">13</option>
+	  <option value="14">14</option>
+	  <option value="15">15</option>
+	  <option value="16">16</option>
+	  <option value="17">17</option>
+	  <option value="18">18</option>
+	  <option value="19">19</option>
+	  <option value="20">20</option>
+	  <option value="21">21</option>
+	  <option value="22">22</option>
+	  <option value="23">23</option>
+	  <option value="24">24</option>
+	  <option value="24">25</option>
+	  <option value="24">26</option>
+	  <option value="24">27</option>
+	  <option value="24">28</option>
+	  <option value="24">29</option>
+	  <option value="20">30</option>
+	  <option value="21">31</option>
+	  <option value="22">32</option>
+	  <option value="23">33</option>
+	  <option value="24">34</option>
+	  <option value="24">35</option>
+	  <option value="24">36</option>
+	  <option value="24">37</option>
+	  <option value="24">38</option>
+	  <option value="24">39</option>
+	  <option value="20">40</option>
+	  <option value="21">41</option>
+	  <option value="22">42</option>
+	  <option value="23">43</option>
+	  <option value="24">44</option>
+	  <option value="24">45</option>
+	  <option value="24">46</option>
+	  <option value="24">47</option>
+	  <option value="24">48</option>
+	  <option value="24">49</option>
+	  <option value="20">50</option>
+	  <option value="21">51</option>
+	  <option value="22">52</option>
+	  <option value="23">53</option>
+	  <option value="24">54</option>
+	  <option value="24">55</option>
+	  <option value="24">56</option>
+	  <option value="24">57</option>
+	  <option value="24">58</option>
+	  <option value="24">59</option>
+      <!-- Agregar más opciones de segundos según tus necesidades -->
+    </select>
+  </div>
+  <div id="timer">0:0:0</div>
+<button onclick="startTimer()"><center>Iniciar</center></button>
+<button onclick="stopTimer()"><center>Detener</center></button>
+
+  <!-- Botón deslizable para cambiar entre modo oscuro y modo blanco -->
+ 
+</div>
+</body>
+</html>
+
+
+
+
